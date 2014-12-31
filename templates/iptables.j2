@@ -1,12 +1,51 @@
 {{ ansible_managed }}
 
-# Open TCP Ports
-{% for port in firwall %}
+# Default rules
+*filter
+{% if firewall_default_drop or if firewall_strict %}
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+{% else %}
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+{% endif %}
+:OUTPUT ACCEPT [0:0]
 
+# Allow established connections and traffic to loopback interface
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+
+# Open TCP Ports
+{% for port in firewall_allowed_tcp_ports %}
+-A INPUT -m tcp -p tcp --dport {{ port }} -j ACCEPT
 {% endfor %}
 
 # Open UDP Ports
-
-# Custom rules
+{% for port in firewall_allowed_udp_ports %}
+-A INPUT -m tcp -p udp --dport {{ port }} -j ACCEPT
+{% endfor %}
 
 # Open certain ports to IPs or Subnets
+{% for item in sequence %}
+
+{% endfor %}
+
+# Custom rules
+{% for rule in firewall_custom_rules %}
+{{ rule }}
+{% endfor %}
+
+{% if firewall_strict %}
+# Only allow certain ICMP echo requests and drop ICMP timestamp requests
+-A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+-A INPUT -p icmp --icmp-type timestamp-request -j DROP
+-A INPUT -p icmp --icmp-type timestamp-reply -j DROP
+{% else %}
+# Allow all ICMP traffic
+-A INPUT -p icmp -j ACCEPT
+{% endif %}
+
+# Send a response if the packet is not allowed by any rules
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+
+COMMIT

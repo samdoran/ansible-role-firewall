@@ -12,6 +12,7 @@
     owner: root
     group: root
     mode: 0600
+  notify: reload iptables
 
 - name: Ensure iptables is enabled and started
   service: name=iptables enabled=yes state=started
