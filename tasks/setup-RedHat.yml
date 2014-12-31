@@ -1,9 +1,8 @@
 ---
 - name: Install iptables (Red Hat)
   yum: name=iptables state=latest
-  when: {{ ansible_os_family }} == 'RedHat'
 
 - name: Set iptables directory (Red Hat)
   set_fact:
     firewall_config_dir: "/etc/sysconfig"
-    firewal_config_file: "iptables"
+    firewall_config_file: "iptables"

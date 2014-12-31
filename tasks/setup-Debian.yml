@@ -1,7 +1,6 @@
 ---
 - name: Install iptables (Debian)
   apt: name=iptables state=latest
-  when: {{ ansible_os_family }} == 'Debian'
 
 - name: Set iptables directory (Debian)
   set_fact:
