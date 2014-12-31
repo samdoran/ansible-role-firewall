@@ -1,0 +1,17 @@
+---
+- name: Install iptables (Debian)
+  apt: name=iptables state=latest
+  when: {{ ansible_os_family }} == 'Debian'
+
+- name: Set iptables directory (Debian)
+  set_fact:
+    firewall_config_dir: "/etc/"
+    firewall_config_file: "iptables.rules"
+
+- name: Copy iptables load script (Debian)
+  template:
+    src: iptablesload.j2
+    dest: /etc/if-pre-up.d/iptablesload
+    owner: root
+    group: root
+    mode: 0700

@@ -1,0 +1,17 @@
+---
+- include: setup-RedHat.yml
+  when: {{ ansible_os_family }} == 'RedHat'
+
+- include: setup-Debian.yml
+  when: {{ ansible_os_family }} == 'Debian'
+
+- name: Copy iptables template
+  template:
+    src: iptables.j2
+    dest: "{{ firewall_config_dir }}/{{ firewall_config_name }}"
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Ensure iptables is enabled and started
+  service: name=iptables enabled=yes state=started
