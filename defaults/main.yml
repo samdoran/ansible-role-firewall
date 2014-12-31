@@ -1,2 +1,21 @@
 ---
+# Set default policy for INPUT and ACCEPT chains to DROP
+firewall_default_drop: False
 
+firewall_allow_icmp: False
+
+# Set default policy to DROP and only allow certain ICMP types instead of
+# all ICMP traffic
+firewall_strict: ''
+
+firewall_allowed_tcp_ports: ['22','161']
+firewall_allowed_udp_ports: ['161']
+firewall_pairs:
+  - source_ip: 172.30.240.0/20
+    protocol: tcp
+    dest_port: 80
+
+  - source_ip: 172.30.240.0/20
+    protocol: tcp
+    dest_port: 443
+firewall_custom_rules: []
