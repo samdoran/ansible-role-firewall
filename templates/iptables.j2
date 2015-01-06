@@ -1,8 +1,8 @@
-{{ ansible_managed }}
+# {{ ansible_managed }}
 
-# Default rules
+{#- Default rules #}
 *filter
-{% if firewall_default_drop or if firewall_strict %}
+{% if firewall_default_drop or firewall_strict %}
 :INPUT DROP [0:0]
 :FORWARD DROP [0:0]
 {% else %}
@@ -11,41 +11,43 @@
 {% endif %}
 :OUTPUT ACCEPT [0:0]
 
-# Allow established connections and traffic to loopback interface
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+{# Allow established connections and traffic to loopback interface #}
 -A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-# Open TCP Ports
-{% for port in firewall_allowed_tcp_ports %}
+{# Open TCP Ports #}
+{%- for port in firewall_allowed_tcp_ports %}
 -A INPUT -m tcp -p tcp --dport {{ port }} -j ACCEPT
-{% endfor %}
+{% endfor -%}
 
-# Open UDP Ports
-{% for port in firewall_allowed_udp_ports %}
+{# Open UDP Ports#}
+{%- for port in firewall_allowed_udp_ports %}
 -A INPUT -m tcp -p udp --dport {{ port }} -j ACCEPT
-{% endfor %}
+{% endfor -%}
 
-# Open certain ports to IPs or Subnets
-{% for item in sequence %}
+{# Open certain ports to IPs or Subnets#}
+{%- for item in firewall_advanced_rules %}
+-I INPUT
+{%- if item.new is defined and item.new %}
+ -m state --state NEW
+{%- endif %} -s {{ item.source_ip }} -m {{ item.protocol }} -p {{ item.protocol }} --dport {{ item.dest_port }} -j ACCEPT
+{% endfor -%}
 
-{% endfor %}
-
-# Custom rules
-{% for rule in firewall_custom_rules %}
+{# Custom rules #}
+{%- for rule in firewall_custom_rules %}
 {{ rule }}
-{% endfor %}
+{% endfor -%}
 
-{% if firewall_strict %}
-# Only allow certain ICMP echo requests and drop ICMP timestamp requests
+{%- if firewall_strict %}
+{# Only allow certain ICMP echo requests and drop ICMP timestamp requests #}
 -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
 -A INPUT -p icmp --icmp-type timestamp-request -j DROP
 -A INPUT -p icmp --icmp-type timestamp-reply -j DROP
-{% else %}
-# Allow all ICMP traffic
--A INPUT -p icmp -j ACCEPT
-{% endif %}
+{% elif firewall_allow_icmp %}
+{# Allow all ICMP traffic #}
+-A INPUT -p icmp --icmp-type any -j ACCEPT
+{% endif -%}
 
-# Send a response if the packet is not allowed by any rules
+{# Send a response if the packet is not allowed by any rules #}
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
-
 COMMIT
