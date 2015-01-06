@@ -27,7 +27,7 @@
 
 {# Open certain ports to IPs or Subnets#}
 {%- for item in firewall_advanced_rules %}
--I INPUT
+-A INPUT
 {%- if item.new is defined and item.new %}
  -m state --state NEW
 {%- endif %} -s {{ item.source_ip }} -m {{ item.protocol }} -p {{ item.protocol }} --dport {{ item.dest_port }} -j ACCEPT
