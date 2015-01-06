@@ -15,7 +15,7 @@
     owner: root
     group: root
     mode: 0600
-  # notify: reload iptables
+  notify: reload iptables
   tags: [ 'firewall' , 'fwconfig']
 
 - name: Ensure iptables is enabled and started
