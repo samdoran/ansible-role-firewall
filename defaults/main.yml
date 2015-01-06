@@ -9,7 +9,7 @@ firewall_strict: False
 # Allow all ICMP traffic. Disabled if firewall_strict is True.
 firewall_allow_icmp: True
 
-firewall_allowed_tcp_ports: []
+firewall_allowed_tcp_ports: [ '22' ]
 firewall_allowed_udp_ports: []
 firewall_advanced_rules: []
 firewall_custom_rules: []
