@@ -8,7 +8,7 @@
     firewall_config_file: "iptables"
   tags: [ 'firewall' , 'fwconfig']
 
-- name: Set firewall template name (RedHat)
+- name: Set firewall template name (Red Hat)
   set_fact:
     firewall_template: "iptables"
   when: ansible_distribution != 'XenServer'
