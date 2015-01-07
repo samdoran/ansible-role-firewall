@@ -8,14 +8,14 @@ galaxy_info:
 
   platforms:
     - name: EL
-        versions:
-          - 6
-          - 7
+      versions:
+        - 6
+        - 7
 
     - name: Ubuntu
-        versions:
-          - precise
-          - trusty
+      versions:
+        - precise
+        - trusty
 
   categories:
     - networking
