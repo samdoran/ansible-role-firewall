@@ -9,7 +9,7 @@ firewall_strict: False
 # Allow all ICMP traffic. Disabled if firewall_strict is True.
 firewall_allow_icmp: True
 
-firewall_allowed_tcp_ports: [ '22' ]
+firewall_allowed_tcp_ports: []
 firewall_allowed_udp_ports: []
 firewall_advanced_rules: []
 firewall_custom_rules: []
@@ -29,12 +29,12 @@ firewall_custom_rules: []
 
 # # Create rules that restrict access based on source IP or IP range
 # firewall_advanced_rules:
-#   - source_ip: '10.0.1.17'
+#   - source: '10.0.1.17'
 #     protocol: 'tcp'
 #     dest_port: 22
 #     new: True # optional parameter that adds '-m state --state NEW' to the rule
 
-#   - source_ip: '192.168.0.0/24'
+#   - source: '192.168.0.0/24'
 #     protocol: 'tcp'
 #     dest_port: 22
 
