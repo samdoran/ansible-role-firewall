@@ -13,32 +13,3 @@ firewall_allowed_tcp_ports: []
 firewall_allowed_udp_ports: []
 firewall_advanced_rules: []
 firewall_custom_rules: []
-
-## Examples
-# List TCP and UDP ports to open
-# firewall_allowed_tcp_ports:
-#   - 22
-#   - 161
-#   - 80
-#   - 443
-#   - 123
-
-# firewall_allowed_udp_ports:
-#   - 161
-#   - 123
-
-# # Create rules that restrict access based on source IP or IP range
-# firewall_advanced_rules:
-#   - source: '10.0.1.17'
-#     protocol: 'tcp'
-#     dest_port: 22
-#     new: True # optional parameter that adds '-m state --state NEW' to the rule
-
-#   - source: '192.168.0.0/24'
-#     protocol: 'tcp'
-#     dest_port: 22
-
-# # These get inserted literally, so make sure the syntax is correct
-# firewall_custom_rules:
-#   - 'big hairy rule 1'
-#   - 'big hairy rule 2'
