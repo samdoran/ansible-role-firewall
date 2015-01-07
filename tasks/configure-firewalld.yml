@@ -1,6 +1,6 @@
 ---
 - name: Install firewalld (Red Hat 7)
-  yum: name=firewalld state=latest state=started
+  yum: name=firewalld state=latest
 
 - name: Open TCP ports in firewalld (Red Hat 7)
   firewalld:
