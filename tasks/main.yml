@@ -1,6 +1,6 @@
 ---
 - include: setup-RedHat.yml
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version <= 6
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version | int <= 6
   tags: firewall
 
 - include: setup-Debian.yml
@@ -9,10 +9,10 @@
 
 - include: configure-iptables.yml
   when: >
-    (ansible_os_family == 'RedHat' and ansible_distribution_major_version <= 6) or
+    (ansible_os_family == 'RedHat' and ansible_distribution_major_version | int <= 6) or
     ansible_os_family == 'Debian'
   tags: firewall
 
 - include: configure-firewalld.yml
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == 7
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version | int == 7
   tags: firewall
