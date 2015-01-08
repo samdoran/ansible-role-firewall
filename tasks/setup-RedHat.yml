@@ -1,6 +1,6 @@
 ---
 - name: Install iptables (Red Hat)
-  yum: name=iptables state=latest
+  yum: name=iptables state=latest enablerepo=base
 
 - name: Set iptables directory (Red Hat)
   set_fact:
