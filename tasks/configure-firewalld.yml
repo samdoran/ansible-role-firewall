@@ -2,27 +2,39 @@
 - name: Install firewalld (Red Hat 7)
   yum: name=firewalld state=latest
 
+- name: Get default zone
+  command: firewall-cmd --get-default-zone
+  changed_when: False
+  register: firewalld_default_zone
+  tags: fwconfig
+
 - name: Open TCP ports in firewalld (Red Hat 7)
   firewalld:
-    permanent: True
+    permanent: False
     state: enabled
     port: "{{ item }}/tcp"
   with_items: firewall_allowed_tcp_ports
+  notify: reload firewalld
+  tags: fwconfig
 
 - name: Open UDP ports in firewalld (Red Hat 7)
   firewalld:
-    permanent: True
+    permanent: False
     state: enabled
     port: "{{ item }}/udp"
   with_items: firewall_allowed_udp_ports
+  notify: reload firewalld
+  tags: fwconfig
 
 - name: Configure services per zone (Red Hat 7)
   firewalld:
     permanent: "{{ item.permanent | default('True') }}"
     state: "{{ item.state | default('enabled') }}"
-    zone: "{{ item.zone }}"
+    zone: "{{ item.zone | default(firewalld_default_zone.stdout) }}"
     service: "{{ item.service }}"
   with_items: firewall_firewalld_zone_rules
+  notify: reload firewalld
+  tags: fwconfig
 
 - name: Add rich firewalld rules (Red Hat 7)
   firewalld:
@@ -30,3 +42,5 @@
     state: enabled
     rich_rule: '{{ item }}'
   with_items: firewall_firewalld_rich_rules
+  notify: reload firewalld
+  tags: fwconfig
