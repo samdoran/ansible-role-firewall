@@ -1,12 +1,17 @@
 ---
 - name: Install iptables (Debian)
   apt: name=iptables state=latest
-  when: {{ ansible_os_family }} == 'Debian'
 
 - name: Set iptables directory (Debian)
   set_fact:
     firewall_config_dir: "/etc/"
     firewall_config_file: "iptables.rules"
+  tags: [ 'firewall' , 'fwconfig']
+
+- name: Set firewall template name (Debian)
+  set_fact:
+    firewall_template: "iptables"
+  tags: [ 'firewall' , 'fwconfig']
 
 - name: Copy iptables load script (Debian)
   template:

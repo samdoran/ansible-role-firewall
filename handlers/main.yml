@@ -1,2 +1,9 @@
 ---
-# handlers file for roles/firewall
+- name: reload iptables
+  service: name=iptables state=reloaded
+
+- name: restart iptables
+  service: name=iptables state=restarted
+
+- name: reload firewalld
+  service: name=firewalld state=reloaded

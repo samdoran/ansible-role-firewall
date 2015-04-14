@@ -1,2 +1,26 @@
 ---
+# Set default policy for INPUT and ACCEPT chains to DROP
+firewall_default_drop: False
 
+# Set default policy to DROP and only allow certain ICMP types
+# instead of all ICMP traffic
+firewall_strict: False
+
+# Allow all ICMP traffic. Disabled if firewall_strict is True.
+firewall_allow_icmp: True
+
+firewall_allowed_tcp_ports: []
+firewall_allowed_udp_ports: []
+firewall_advanced_rules: []
+firewall_custom_rules: []
+
+# For firewalld
+firewall_firewalld_services: []
+firewall_firewalld_zone_rules: []
+firewall_firewalld_rich_rules: []
+
+firewall_firewalld_zone_rules:
+  - zone: dmz # Optional. Defaults to sytem default zone
+    service: http
+    permanent: True # Optional. Defaults to True
+    state: disabled # Optional. Defaults to enabled

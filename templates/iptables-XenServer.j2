@@ -1,0 +1,69 @@
+# {{ ansible_managed }}
+
+# Default rules
+*filter
+{% if firewall_default_drop or firewall_strict %}
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+{% else %}
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+{% endif %}
+:OUTPUT ACCEPT [0:0]
+:RH-Firewall-1-INPUT - [0:0]
+
+-A INPUT -j RH-Firewall-1-INPUT
+-A FORWARD -j RH-Firewall-1-INPUT
+
+{# Allow established connections and traffic to loopback interface #}
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+{# Allow IPsec #}
+-A RH-Firewall-1-INPUT -p 50 -j ACCEPT
+-A RH-Firewall-1-INPUT -p 51 -j ACCEPT
+
+{# Not sure why IPP is allowed #}
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 631 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 631 -j ACCEPT
+
+{# Multicast DNS #}
+-A RH-Firewall-1-INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
+
+{# BootP #}
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 67 --in-interface xenapi -j ACCEPT
+
+{# HA Heartbeat #}
+-A RH-Firewall-1-INPUT -m state --state NEW -m udp -p udp --dport 694 -j ACCEPT
+
+{# Open TCP Ports #}
+{%- for port in firewall_allowed_tcp_ports %}
+-A RH-Firewall-1-INPUT -m tcp -p tcp --dport {{ port }} -j ACCEPT
+{% endfor -%}
+
+{# Open UDP Ports#}
+{%- for port in firewall_allowed_udp_ports %}
+-A RH-Firewall-1-INPUT -m tcp -p udp --dport {{ port }} -j ACCEPT
+{% endfor -%}
+
+{%- for item in firewall_advanced_rules %}
+-A RH-Firewall-1-INPUT
+{%- if item.new is defined and item.new %}
+ -m state --state NEW
+{%- endif %} -s {{ item.source }} -m {{ item.protocol }} -p {{ item.protocol }} --dport {{ item.dest_port }} -j ACCEPT
+{% endfor -%}
+
+{% if firewall_strict %}
+# Only allow certain ICMP echo requests and drop ICMP timestamp requests
+-A RH-Firewall-1-INPUT -p icmp --icmp-type echo-request -j ACCEPT
+-A RH-Firewall-1-INPUT -p icmp --icmp-type timestamp-request -j DROP
+-A RH-Firewall-1-INPUT -p icmp --icmp-type timestamp-reply -j DROP
+{% elif firewall_allow_icmp %}
+{# Allow all ICMP traffic #}
+-A RH-Firewall-1-INPUT -p icmp --icmp-type any -j ACCEPT
+{% endif -%}
+
+# Send a response if the packet is not allowed by any rules
+-A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+
+COMMIT

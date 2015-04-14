@@ -1,0 +1,15 @@
+---
+- name: Copy iptables template
+  template:
+    src: "{{ firewall_template }}.j2"
+    dest: "{{ firewall_config_dir }}/{{ firewall_config_file }}"
+    backup: yes
+    owner: root
+    group: root
+    mode: 0600
+  notify: reload iptables
+  tags: [ 'firewall' , 'fwconfig']
+
+- name: Ensure iptables is enabled and started
+  service: name=iptables enabled=yes state=started
+  tags: firewall
