@@ -43,7 +43,7 @@
 
 {# Open UDP Ports#}
 {%- for port in firewall_allowed_udp_ports %}
--A RH-Firewall-1-INPUT -m tcp -p udp --dport {{ port }} -j ACCEPT
+-A RH-Firewall-1-INPUT -m udp -p udp --dport {{ port }} -j ACCEPT
 {% endfor -%}
 
 {%- for item in firewall_advanced_rules %}
