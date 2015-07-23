@@ -17,31 +17,21 @@
 
 {# Allow established connections and traffic to loopback interface #}
 -A RH-Firewall-1-INPUT -i lo -j ACCEPT
--A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A RH-Firewall-1-INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
-{# Allow IPsec #}
--A RH-Firewall-1-INPUT -p 50 -j ACCEPT
--A RH-Firewall-1-INPUT -p 51 -j ACCEPT
-
-{# Not sure why IPP is allowed #}
--A RH-Firewall-1-INPUT -p udp -m udp --dport 631 -j ACCEPT
--A RH-Firewall-1-INPUT -p tcp -m tcp --dport 631 -j ACCEPT
-
-{# Multicast DNS #}
--A RH-Firewall-1-INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
-
-{# BootP #}
+{# DHCP for host internal networks (CA-6996) #}
 -A RH-Firewall-1-INPUT -p udp -m udp --dport 67 --in-interface xenapi -j ACCEPT
+-A RH-Firewall-1-INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
-{# HA Heartbeat #}
--A RH-Firewall-1-INPUT -m state --state NEW -m udp -p udp --dport 694 -j ACCEPT
+{# Linux HA hearbeat (CA-9394) #}
+-A RH-Firewall-1-INPUT -m conntrack --ctstate NEW -m udp -p udp --dport 694 -j ACCEPT
 
 {# Open TCP Ports #}
 {%- for port in firewall_allowed_tcp_ports %}
 -A RH-Firewall-1-INPUT -m tcp -p tcp --dport {{ port }} -j ACCEPT
 {% endfor -%}
 
-{# Open UDP Ports#}
+{# Open UDP Ports #}
 {%- for port in firewall_allowed_udp_ports %}
 -A RH-Firewall-1-INPUT -m udp -p udp --dport {{ port }} -j ACCEPT
 {% endfor -%}
@@ -49,7 +39,7 @@
 {%- for item in firewall_advanced_rules %}
 -A RH-Firewall-1-INPUT
 {%- if item.new is defined and item.new %}
- -m state --state NEW
+ -m conntrack --ctstate NEW
 {%- endif %} -s {{ item.source }} -m {{ item.protocol }} -p {{ item.protocol }} --dport {{ item.dest_port }} -j ACCEPT
 {% endfor -%}
 
