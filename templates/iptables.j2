@@ -1,5 +1,17 @@
 # {{ ansible_managed }}
 
+{# PREROUTING rules #}
+{% if firewall_nat_rules is defined  %}
+*nat
+:PREROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+{% for item in firewall_nat_rules %}
+-I PREROUTING -p {{ item.protocol }} --dport {{ item.original_port }} -j REDIRECT --to-port {{ item.translated_port }}
+{% endfor %}
+COMMIT
+{% endif %}
+
 {# Default rules #}
 *filter
 {% if firewall_default_drop or firewall_strict %}
