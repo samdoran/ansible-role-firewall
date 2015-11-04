@@ -6,12 +6,16 @@
   set_fact:
     firewall_config_dir: "/etc/"
     firewall_config_file: "iptables.rules"
-  tags: [ 'firewall' , 'fwconfig']
+  tags:
+    - firewall
+    - fwconfig
 
 - name: Set firewall template name (Debian)
   set_fact:
     firewall_template: "iptables"
-  tags: [ 'firewall' , 'fwconfig']
+  tags:
+    - firewall
+    - fwconfig
 
 - name: Copy iptables load script (Debian)
   template:
@@ -20,3 +24,6 @@
     owner: root
     group: root
     mode: 0700
+  tags:
+    - firewall
+    - fwconfig
