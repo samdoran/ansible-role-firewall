@@ -4,7 +4,7 @@ galaxy_info:
   description: "Install and configure the firewall on Ubuntu, CentOS, or XenServer."
   company:
   license: MIT
-  min_ansible_version: 1.6
+  min_ansible_version: 1.9
 
   platforms:
     - name: EL
@@ -17,10 +17,10 @@ galaxy_info:
         - precise
         - trusty
 
-  categories:
+  galaxy_tags:
     - networking
     - system
+    - firewall
 
 dependencies: []
 
-version: 1.0
