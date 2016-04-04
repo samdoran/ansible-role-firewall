@@ -21,8 +21,8 @@ firewall_firewalld_services: []
 firewall_firewalld_zone_rules: []
 firewall_firewalld_rich_rules: []
 
-firewall_firewalld_zone_rules:
-  - zone: dmz # Optional. Defaults to sytem default zone
-    service: http
-    permanent: True # Optional. Defaults to True
-    state: disabled # Optional. Defaults to enabled
+# firewall_firewalld_zone_rules:
+#   - zone: dmz # Optional. Defaults to sytem default zone
+#     service: http
+#     permanent: True # Optional. Defaults to True
+#     state: disabled # Optional. Defaults to enabled
