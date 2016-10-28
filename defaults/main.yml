@@ -1,13 +1,12 @@
----
 # Set default policy for INPUT and ACCEPT chains to DROP
-firewall_default_drop: False
+firewall_default_drop: no
 
 # Set default policy to DROP and only allow certain ICMP types
 # instead of all ICMP traffic
-firewall_strict: False
+firewall_strict: no
 
 # Allow all ICMP traffic. Disabled if firewall_strict is True.
-firewall_allow_icmp: True
+firewall_allow_icmp: yes
 
 firewall_allowed_tcp_ports:
   - 22

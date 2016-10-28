@@ -1,4 +1,3 @@
----
 galaxy_info:
   author: Sam Doran
   description: "Install and configure the firewall on Ubuntu, CentOS, or XenServer."
