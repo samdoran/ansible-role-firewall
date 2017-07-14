@@ -11,10 +11,10 @@ galaxy_info:
         - 6
         - 7
 
-    - name: Ubuntu
-      versions:
-        - precise
-        - trusty
+    # - name: Ubuntu
+    #   versions:
+    #     - precise
+    #     - trusty
 
   galaxy_tags:
     - networking
