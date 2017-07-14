@@ -17,7 +17,6 @@ galaxy_info:
     #     - trusty
 
   galaxy_tags:
-    - networking
     - system
     - firewall
 
