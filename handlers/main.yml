@@ -1,14 +1,9 @@
-- name: reload iptables
+- name: reload firewall
   service:
-    name: iptables
+    name: "{{ firewall_name }}"
     state: reloaded
 
-- name: restart iptables
+- name: restart firewall
   service:
-    name: iptables
+    name: "{{ firewall_name }}"
     state: restarted
-
-- name: reload firewalld
-  service:
-    name: firewalld
-    state: reloaded

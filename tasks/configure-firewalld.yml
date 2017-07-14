@@ -1,46 +1,72 @@
----
-- name: Install firewalld (Red Hat 7)
-  yum: name=firewalld state=latest
+- name: FIREWALLD | Start and enable firewalld
+  service:
+    name: "{{ firewall_name }}"
+    enabled: yes
+    state: started
+  tags:
+    - firewall_config
+    - fwconfig
 
-- name: Get default zone
-  command: firewall-cmd --get-default-zone
-  changed_when: False
-  register: firewalld_default_zone
-  tags: fwconfig
-
-- name: Open TCP ports in firewalld (Red Hat 7)
+- name: FIREWALLD | Open TCP ports in firewalld
   firewalld:
-    permanent: False
+    permanent: "{{ item.permanent | default('yes') }}"
     state: enabled
-    port: "{{ item }}/tcp"
-  with_items: firewall_allowed_tcp_ports
-  notify: reload firewalld
-  tags: fwconfig
+    port: "{{ item.port | default(item) }}/tcp"
+    zone: "{{ item.zone | default(omit) }}"
+  with_items: "{{ firewall_allowed_tcp_ports }}"
+  notify: reload firewall
+  tags:
+    - firewall_config
+    - fwconfig
 
-- name: Open UDP ports in firewalld (Red Hat 7)
+- name: FIREWALLD | Open UDP ports in firewalld
   firewalld:
-    permanent: False
+    permanent: "{{ item.permanent | default('yes') }}"
     state: enabled
-    port: "{{ item }}/udp"
-  with_items: firewall_allowed_udp_ports
-  notify: reload firewalld
-  tags: fwconfig
+    port: "{{ item.port | default(item) }}/udp"
+    zone: "{{ item.zone | default(omit) }}"
+  with_items: "{{ firewall_allowed_udp_ports }}"
+  notify: reload firewall
+  tags:
+    - firewall_config
+    - fwconfig
 
-- name: Configure services per zone (Red Hat 7)
+- name: FIREWALLD | Configure NAT rules
   firewalld:
-    permanent: "{{ item.permanent | default('True') }}"
+    state: enabled
+    permanent: yes
+    rich_rule: rule family={{ item.family | default('ipv4') }} forward-port port={{ item.original_port }} protocol={{ item.protocol }} to-port={{ item.translated_port }}
+  with_items: "{{ firewall_nat_rules }}"
+  notify: reload firewall
+  tags:
+    - firewall_config
+    - fwconfig
+
+- name: FIREWALLD | Configure advanced rules
+  firewalld:
+    state: enabled
+    permanent: yes
+    rich_rule: rule family={{ item.family | default('ipv4') }} port port={{ item.dest_port }} protocol={{ item.protocol }} source address={{ item.source }} accept
+  with_items: "{{ firewall_advanced_rules }}"
+  tags:
+    - firewall_config
+    - fwconfig
+
+- name: FIREWALLD | Configure additional firewalld rules
+  firewalld:
+    immediate: "{{ item.immediate | default(omit) }}"
+    interface: "{{ item.interface | default(omit) }}"
+    masquerade: "{{ item.masquerade | default(omit) }}"
+    permanent: "{{ item.permanent | default('yes') }}"
+    port: "{{ item.port ~ '/' ~ item.protocol if (item.port is defined and item.protocol is defined) else omit }}"
+    rich_rule: "{{ item.rich_rule | default(omit) }}"
+    service: "{{ item.service | default(omit) }}"
+    source: "{{ item.source | default(omit) }}"
     state: "{{ item.state | default('enabled') }}"
-    zone: "{{ item.zone | default(firewalld_default_zone.stdout) }}"
-    service: "{{ item.service }}"
-  with_items: firewall_firewalld_zone_rules
-  notify: reload firewalld
-  tags: fwconfig
-
-- name: Add rich firewalld rules (Red Hat 7)
-  firewalld:
-    permanent: True
-    state: enabled
-    rich_rule: '{{ item }}'
-  with_items: firewall_firewalld_rich_rules
-  notify: reload firewalld
-  tags: fwconfig
+    timeout: "{{ item.timeout | default(omit) }}"
+    zone: "{{ item.zone | default(omit) }}"
+  with_items: "{{ firewall_firewalld_rules }}"
+  notify: reload firewall
+  tags:
+    - firewall_config
+    - fwconfig

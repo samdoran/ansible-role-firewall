@@ -1,9 +1,9 @@
 galaxy_info:
   author: Sam Doran
-  description: "Install and configure the firewall on Ubuntu, CentOS, or XenServer."
-  company:
+  description: Install and configure the firewall on Ubuntu, CentOS, or XenServer
+  company: Ansible by Red Hat
   license: MIT
-  min_ansible_version: 1.9
+  min_ansible_version: 2.3
 
   platforms:
     - name: EL

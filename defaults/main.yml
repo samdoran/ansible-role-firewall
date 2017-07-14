@@ -13,15 +13,19 @@ firewall_allowed_tcp_ports:
 firewall_allowed_udp_ports:
   - 161
 firewall_advanced_rules: []
-firewall_custom_rules: []
+firewall_custom_iptables_rules: []
+firewall_nat_rules: []
 
-# For firewalld
-firewall_firewalld_services: []
-firewall_firewalld_zone_rules: []
-firewall_firewalld_rich_rules: []
-
-# firewall_firewalld_zone_rules:
-#   - zone: dmz # Optional. Defaults to sytem default zone
-#     service: http
-#     permanent: True # Optional. Defaults to True
-#     state: disabled # Optional. Defaults to enabled
+## For firewalld only
+firewall_firewalld_rules: []
+  # - immediate:
+  #   interface:
+  #   masquerade:
+  #   permanent:
+  #   port:                       # If port is specificed, protocol is required
+  #   rich_rule:
+  #   service:
+  #   source:
+  #   state: enabled
+  #   timeout:
+  #   zone:

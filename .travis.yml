@@ -1,0 +1,54 @@
+services: docker
+
+env:
+  - distro: centos6
+    init: /sbin/init
+    run_opts: ""
+
+  - distro: centos7
+    init: /usr/lib/systemd/systemd
+    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+
+  # - distro: ubuntu14
+  #   init: /sbin/init
+  #   run_opts: ""
+
+  # - distro: ubuntu16
+  #   init: /lib/systemd/systemd
+  #   run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+
+before_install:
+  # Pull container.
+  - 'docker pull samdoran/${distro}-ansible:latest'
+
+script:
+  - container_id=$(date +%s)
+
+  # Run container in detached state.
+  - echo "Running container"
+  - docker run --detach --volume="$PWD":/etc/ansible/roles/role_under_test:ro --name $container_id $run_opts samdoran/${distro}-ansible:latest $init
+
+  # Install dependencies
+  # - echo "Installing role dependencies"
+  # - docker exec --tty $container_id ansible-galaxy install -r /etc/ansible/roles/role_under_test/tests/requirements.yml
+
+  # Ansible syntax check.
+  - echo "Checking role syntax"
+  - docker exec --tty $container_id ansible-playbook /etc/ansible/roles/role_under_test/tests/travis.yml --syntax-check
+
+  # Test role.
+  - echo "Running the role"
+  - docker exec --tty $container_id ansible-playbook /etc/ansible/roles/role_under_test/tests/travis.yml
+
+  # Test role idempotence.
+  - echo "Testing role idempotence"
+  - idempotence_log=$(mktemp)
+  - docker exec --tty $container_id ansible-playbook /etc/ansible/roles/role_under_test/tests/travis.yml | tee -a $idempotence_log
+  - >
+    tail $idempotence_log
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

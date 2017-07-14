@@ -1,17 +1,21 @@
-- include: setup-RedHat.yml
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version | int <= 6
-  tags: firewall
+- name: Set variables for Red Hat
+  include_vars: "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+  when: ansible_os_family == 'RedHat'
+  tags:
+    - firewall
+    - always
 
-- include: setup-Debian.yml
+- name: Set variables for Debian
+  include_vars: "{{ ansible_os_family }}.yml"
   when: ansible_os_family == 'Debian'
-  tags: firewall
+  tags:
+    - firewall
+    - always
 
-- include: configure-iptables.yml
-  when: >
-    (ansible_os_family == 'RedHat' and ansible_distribution_major_version | int <= 6) or
-    ansible_os_family == 'Debian'
-  tags: firewall
+- include: setup-{{ ansible_os_family }}.yml
+  tags:
+    - firewall
 
-- include: configure-firewalld.yml
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version | int == 7
-  tags: firewall
+- include: configure-{{ firewall_name }}.yml
+  tags:
+    - firewall

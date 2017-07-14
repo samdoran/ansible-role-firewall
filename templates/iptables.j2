@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 {# PREROUTING rules #}
-{% if firewall_nat_rules is defined  %}
+{% if firewall_nat_rules is defined and firewall_nat_rules | length != 0 %}
 *nat
 :PREROUTING ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
@@ -29,12 +29,12 @@ COMMIT
 
 {# Open TCP Ports #}
 {%- for port in firewall_allowed_tcp_ports %}
--A INPUT -p tcp -m tcp --dport {{ port }} -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport {{ port }} -j ACCEPT
 {% endfor -%}
 
 {# Open UDP Ports#}
 {%- for port in firewall_allowed_udp_ports %}
--A INPUT -p udp -m udp --dport {{ port }} -j ACCEPT
+-A INPUT -p udp -m state --state NEW -m udp --dport {{ port }} -j ACCEPT
 {% endfor -%}
 
 {# Open certain ports to IPs or Subnets#}
@@ -46,7 +46,7 @@ COMMIT
 {% endfor -%}
 
 {# Custom rules #}
-{%- for rule in firewall_custom_rules %}
+{%- for rule in firewall_custom_iptables_rules %}
 {{ rule }}
 {% endfor -%}
 
@@ -62,4 +62,5 @@ COMMIT
 
 {# Send a response if the packet is not allowed by any rules #}
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
 COMMIT

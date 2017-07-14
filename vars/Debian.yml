@@ -1,0 +1,4 @@
+firewall_name: iptables
+firewall_config_dir: /etc/
+firewall_config_file: iptables.rules
+firewall_template: iptables
