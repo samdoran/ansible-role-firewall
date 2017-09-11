@@ -2,12 +2,8 @@
   remote_user: vagrant
   become: yes
 
-  vars:
-    firewall_advanced_rules:
-      - source: '10.0.1.17'
-        protocol: 'tcp'
-        dest_port: 22
-        new: True
+  vars_files:
+    - extra_vars.yml
 
   roles:
     - firewall

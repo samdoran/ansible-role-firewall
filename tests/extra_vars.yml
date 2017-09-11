@@ -1,0 +1,16 @@
+firewall_rich_rules:
+  - source: '10.0.1.17'
+    protocol: 'tcp'
+    dest_port: 22
+    new: yes
+
+firewall_nat_rules:
+  - family: ipv4
+    protocol: udp
+    original_port: 514
+    translated_port: 5140
+
+firewall_firewalld_rules:
+  - permanent: yes
+    immediate: yes
+    port: 9990
