@@ -12,9 +12,19 @@ firewall_allowed_tcp_ports:
   - 22
 firewall_allowed_udp_ports:
   - 161
-firewall_advanced_rules: []
+firewall_rich_rules: []
+  # - source:
+  #   protocol:
+  #   dest_port:
+  #   new: yes
+
 firewall_custom_iptables_rules: []
+
 firewall_nat_rules: []
+  # - family: ipv4
+  #   original_port: 514
+  #   protocol: udp
+  #   translated_port: 5140
 
 ## For firewalld only
 firewall_firewalld_rules: []

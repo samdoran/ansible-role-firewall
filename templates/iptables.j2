@@ -38,7 +38,7 @@ COMMIT
 {% endfor -%}
 
 {# Open certain ports to IPs or Subnets#}
-{%- for item in firewall_advanced_rules %}
+{%- for item in firewall_rich_rules %}
 -A INPUT -s {{ item.source }} -p {{ item.protocol }} -m {{ item.protocol }} --dport {{ item.dest_port }}
 {%- if item.new is defined and item.new %}
  -m state --state NEW

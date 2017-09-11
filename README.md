@@ -17,9 +17,9 @@ Role Variables
 | `firewall_allow_icmp` | `yes` | Allow all ICMP traffic. Has no affect if `firewall_strict` is `True` |
 | `firewall_allowed_tcp_ports` | `['22']` | List of allowed TCP ports |
 | `firewall_allowed_udp_ports` | `['161'] `| List of allowed UDP ports |
-| `firewall_advanced_rules` | `[]` | Specify a source IP and destination port instead of opening the port globally. Optionally allow it only if it is new. (Used only by `iptables`) |
+| `firewall_rich_rules` | `[]` | Specify a source IP and destination port instead of opening the port globally. Optionally allow it only if it is new. With `iptables`, this adds rules to the `iptables` config file. With `firewalld`, this creates rich rules to the specified zone. |
 | `firewall_custom_iptables_rules` | `[]` | Rules inserted verbatim. Make sure the syntax is correct. |
-| `firewall_nat_rules` | `undefined` | List of ports and their protocols to NAT. |
+| `firewall_nat_rules` | `undefined` | List of ports and their protocols to NAT. With `iptables`, add prerouting rules to the `NAT` table. With `firewalld`, adds rich rules to the specified zone. |
 | `firewall_firewalld_rules` | `[]` | List of rules to pass to the `firewalld` module. Each module argument is optional. |
 
 
@@ -30,7 +30,7 @@ Examples:
         original_port: 4022
         translated_port: 22
 
-    firewall_advanced_rules:
+    firewall_rich_rules:
       - source: '10.0.1.17'
         protocol: 'tcp'
         dest_port: 22
@@ -75,7 +75,7 @@ Use advanced rules to restrict access to services based on IP on subnet:
 ```yaml
 - hosts: all
   vars:
-    firewall_advanced_rules:
+    firewall_rich_rules:
       - source: 192.168.40.64/29
         protocol: 'tcp'
         dest_port: '22'

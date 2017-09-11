@@ -35,6 +35,7 @@
   firewalld:
     state: enabled
     permanent: yes
+    zone: "{{ item.zone | default(omit) }}"
     rich_rule: rule family={{ item.family | default('ipv4') }} forward-port port={{ item.original_port }} protocol={{ item.protocol }} to-port={{ item.translated_port }}
   with_items: "{{ firewall_nat_rules }}"
   notify: restart firewall
@@ -42,12 +43,13 @@
     - firewall_config
     - fwconfig
 
-- name: FIREWALLD | Configure advanced rules
+- name: FIREWALLD | Configure rich rules
   firewalld:
     state: enabled
     permanent: yes
+    zone: "{{ item.zone | default(omit) }}"
     rich_rule: rule family={{ item.family | default('ipv4') }} port port={{ item.dest_port }} protocol={{ item.protocol }} source address={{ item.source }} accept
-  with_items: "{{ firewall_advanced_rules }}"
+  with_items: "{{ firewall_rich_rules }}"
   tags:
     - firewall_config
     - fwconfig
