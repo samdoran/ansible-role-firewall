@@ -12,10 +12,10 @@
     - firewall
     - always
 
-- include: setup-{{ ansible_os_family }}.yml
+- include_tasks: setup-{{ ansible_os_family }}.yml
   tags:
     - firewall
 
-- include: configure-{{ firewall_name }}.yml
+- include_tasks: configure-{{ firewall_name }}.yml
   tags:
     - firewall
