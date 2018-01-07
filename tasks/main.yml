@@ -19,3 +19,5 @@
 - include_tasks: configure-{{ firewall_name }}.yml
   tags:
     - firewall
+    - firewall_config
+    - fwconfig
