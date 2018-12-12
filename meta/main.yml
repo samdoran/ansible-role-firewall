@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: firewall
   author: Sam Doran
   description: Install and configure the firewall on Ubuntu, CentOS, or XenServer
   company: Ansible by Red Hat
