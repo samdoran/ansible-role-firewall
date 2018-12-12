@@ -12,9 +12,9 @@ Role Variables
 
 |   Name               | Default Value | Description                                                      |
 |----------------------|---------------|------------------------------------------------------------------|
-| `firewall_strict`    | `no`         | Set default policy to `DROP` and restrict types of ICMP traffic  |
-| `firewall_default_drop`    | `no`  | Set default policy to `DROP`  |
-| `firewall_allow_icmp` | `yes` | Allow all ICMP traffic. Has no affect if `firewall_strict` is `True` |
+| `firewall_strict`    | `false`         | Set default policy to `DROP` and restrict types of ICMP traffic  |
+| `firewall_default_drop`    | `false`  | Set default policy to `DROP`  |
+| `firewall_allow_icmp` | `true` | Allow all ICMP traffic. Has no affect if `firewall_strict` is `True` |
 | `firewall_allowed_tcp_ports` | `['22']` | List of allowed TCP ports |
 | `firewall_allowed_udp_ports` | `['161'] `| List of allowed UDP ports |
 | `firewall_rich_rules` | `[]` | Specify a source IP and destination port instead of opening the port globally. Optionally allow it only if it is new. With `iptables`, this adds rules to the `iptables` config file. With `firewalld`, this creates rich rules to the specified zone. |
@@ -34,7 +34,7 @@ Examples:
       - source: '10.0.1.17'
         protocol: 'tcp'
         dest_port: 22
-        new: True
+        new: true
 
       - source: '192.168.0.0/24'
         protocol: 'tcp'
@@ -60,7 +60,7 @@ Parameterized role that restricts ICMP traffic, sets the default policy to `DROP
 - hosts: all
   roles:
     - role: sdoran.firewall
-      firewall_strict: yes
+      firewall_strict: true
       firewall_allowed_tcp_ports:
         - 22
         - 80

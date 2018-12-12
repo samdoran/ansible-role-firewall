@@ -2,7 +2,7 @@ firewall_rich_rules:
   - source: '10.0.1.17'
     protocol: 'tcp'
     dest_port: 22
-    new: yes
+    new: true
 
 firewall_nat_rules:
   - family: ipv4
@@ -11,6 +11,6 @@ firewall_nat_rules:
     translated_port: 5140
 
 firewall_firewalld_rules:
-  - permanent: yes
-    immediate: yes
+  - permanent: true
+    immediate: true
     port: 9990

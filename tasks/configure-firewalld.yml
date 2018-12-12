@@ -1,7 +1,7 @@
 - name: FIREWALLD | Start and enable firewalld
   service:
     name: "{{ firewall_name }}"
-    enabled: yes
+    enabled: true
     state: started
   tags:
     - firewall_config
@@ -34,7 +34,7 @@
 - name: FIREWALLD | Configure NAT rules
   firewalld:
     state: enabled
-    permanent: yes
+    permanent: true
     zone: "{{ item.zone | default(omit) }}"
     rich_rule: rule family={{ item.family | default('ipv4') }} forward-port port={{ item.original_port }} protocol={{ item.protocol }} to-port={{ item.translated_port }}
   with_items: "{{ firewall_nat_rules }}"
@@ -46,7 +46,7 @@
 - name: FIREWALLD | Configure rich rules
   firewalld:
     state: enabled
-    permanent: yes
+    permanent: true
     zone: "{{ item.zone | default(omit) }}"
     rich_rule: rule family={{ item.family | default('ipv4') }} port port={{ item.dest_port }} protocol={{ item.protocol }} source address={{ item.source }} accept
   with_items: "{{ firewall_rich_rules }}"
