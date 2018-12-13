@@ -1,0 +1,14 @@
+- hosts: all
+  become: true
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - debug:
+        msg: >-
+          Testing with Ansible {{ ansible_version.full }} using Python {{ ansible_python_version }}
+          on {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}
+
+    - import_role:
+        name: firewall

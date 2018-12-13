@@ -1,9 +1,0 @@
-- hosts: all
-  remote_user: vagrant
-  become: true
-
-  vars_files:
-    - extra_vars.yml
-
-  roles:
-    - firewall

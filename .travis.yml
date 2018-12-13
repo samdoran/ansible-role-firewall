@@ -1,54 +1,35 @@
+language: python
 services: docker
 
 env:
-  - distro: centos6
-    init: /sbin/init
-    run_opts: ""
+  global:
+    - ROLE_NAME: caddy
+  matrix:
+    - MOLECULE_DISTRIBUTION: centos6
+    - MOLECULE_DISTRIBUTION: centos7
+    # - MOLECULE_DISTRIBUTION: rhel6
+    # - MOLECULE_DISTRIBUTION: rhel7
+    # - MOLECULE_DISTRIBUTION: ubuntu14
+    # - MOLECULE_DISTRIBUTION: ubuntu16
+    # - MOLECULE_DISTRIBUTION: ubuntu18
+    # - MOLECULE_DISTRIBUTION: debian8
+    # - MOLECULE_DISTRIBUTION: debian9
+    # - MOLECULE_DISTRIBUTION: fedora27
+    # - MOLECULE_DISTRIBUTION: fedora28
+    # - MOLECULE_DISTRIBUTION: fedora29
 
-  - distro: centos7
-    init: /usr/lib/systemd/systemd
-    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+install:
+  - pip install molecule docker
 
-  # - distro: ubuntu14
-  #   init: /sbin/init
-  #   run_opts: ""
-
-  # - distro: ubuntu16
-  #   init: /lib/systemd/systemd
-  #   run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
-
-before_install:
-  # Pull container.
-  - 'docker pull samdoran/${distro}-ansible:latest'
+before_script:
+  # Remove "ansible-role-" prefix from role name
+  - cd ../
+  - mv ansible-role-$ROLE_NAME $ROLE_NAME
+  - cd $ROLE_NAME
 
 script:
-  - container_id=$(date +%s)
-
-  # Run container in detached state.
-  - echo "Running container"
-  - docker run --privileged --detach --volume="$PWD":/etc/ansible/roles/role_under_test:ro --name $container_id $run_opts samdoran/${distro}-ansible:latest $init
-
-  # Install dependencies
-  # - echo "Installing role dependencies"
-  # - docker exec --tty $container_id ansible-galaxy install -r /etc/ansible/roles/role_under_test/tests/requirements.yml
-
-  # Ansible syntax check.
-  - echo "Checking role syntax"
-  - docker exec --tty $container_id ansible-playbook /etc/ansible/roles/role_under_test/tests/travis.yml --syntax-check
-
-  # Test role.
-  - echo "Running the role"
-  - docker exec --tty $container_id ansible-playbook /etc/ansible/roles/role_under_test/tests/travis.yml
-
-  # Test role idempotence.
-  - echo "Testing role idempotence"
-  - idempotence_log=$(mktemp)
-  - docker exec --tty $container_id ansible-playbook /etc/ansible/roles/role_under_test/tests/travis.yml | tee -a $idempotence_log
-  - >
-    tail $idempotence_log
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
+  # Run tests
+  - molecule test
 
 notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

@@ -1,8 +1,0 @@
-- hosts: localhost
-  connection: local
-
-  vars_files:
-    - extra_vars.yml
-
-  roles:
-    - role_under_test
