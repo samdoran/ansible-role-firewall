@@ -12,11 +12,6 @@ galaxy_info:
         - 6
         - 7
 
-    # - name: Ubuntu
-    #   versions:
-    #     - precise
-    #     - trusty
-
   galaxy_tags:
     - system
     - firewall
