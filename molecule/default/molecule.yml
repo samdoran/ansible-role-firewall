@@ -4,8 +4,6 @@ driver:
   name: docker
 lint:
   name: yamllint
-  options:
-    config-file: molecule/default/yaml-lint.yml
 platforms:
   - name: firewall-test
     image: "samdoran/${MOLECULE_DISTRIBUTION:-centos7}-ansible:latest"
@@ -21,6 +19,10 @@ provisioner:
     options:
       exclude:
         - molecule/default/playbook.yml
+      x:
+        - 204  # Lines should be no longer than 160 chars
+        - 403  # Package installs should not use latest
+        - 502  # All tasks should be named
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-playbook.yml}
 scenario:
