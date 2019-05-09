@@ -9,7 +9,7 @@
     dest: /etc/if-pre-up.d/iptablesload
     owner: root
     group: root
-    mode: 0700
+    mode: '0700'
   tags:
     - firewall
     - fwconfig

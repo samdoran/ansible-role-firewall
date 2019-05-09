@@ -2,7 +2,7 @@
   template:
     src: "{{ firewall_template }}.j2"
     dest: "{{ firewall_config_dir }}/{{ firewall_config_file }}"
-    backup: true
+    backup: yes
     owner: root
     group: root
     mode: 0600
@@ -16,6 +16,6 @@
 - name: IPTABLES | Ensure iptables is enabled and started
   service:
     name: iptables
-    enabled: true
+    enabled: yes
     state: started
   tags: firewall
