@@ -11,29 +11,7 @@ env:
     - MOLECULE_DISTRIBUTION: centos8
 
 install:
-  - pip install --no-deps molecule==3.0.6 ansible-lint
-  - >-
-    pip install
-    Jinja2
-    PyYAML
-    ansible-base
-    cerberus
-    click
-    click-completion
-    click-help-colors
-    colorama
-    cookiecutter
-    docker
-    flake8
-    paramiko
-    pexpect
-    pluggy
-    pre-commit
-    python-gilt
-    sh
-    tabulate
-    tree-format
-    yamllint
+  - pip install molecule[lint] docker
 
 before_script:
   # Remove "ansible-role-" prefix from role name
