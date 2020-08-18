@@ -1,3 +1,4 @@
+dist: focal
 language: python
 services: docker
 
@@ -13,26 +14,26 @@ install:
   - pip install --no-deps molecule==3.0.6 ansible-lint
   - >-
     pip install
-        Jinja2
-        PyYAML
-        ansible-base
-        cerberus
-        click
-        click-completion
-        click-help-colors
-        colorama
-        cookiecutter
-        docker==4.2.2
-        flake8
-        paramiko
-        pexpec
-        pluggy
-        pre-commit
-        python-gilt
-        sh
-        tabulate
-        tree-format
-        yamllint
+    Jinja2
+    PyYAML
+    ansible-base
+    cerberus
+    click
+    click-completion
+    click-help-colors
+    colorama
+    cookiecutter
+    docker
+    flake8
+    paramiko
+    pexpec
+    pluggy
+    pre-commit
+    python-gilt
+    sh
+    tabulate
+    tree-format
+    yamllint
 
 before_script:
   # Remove "ansible-role-" prefix from role name
