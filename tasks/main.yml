@@ -1,13 +1,15 @@
-- name: Set variables for Red Hat
-  include_vars: "{{ ansible_facts.os_family }}-{{ ansible_facts.distribution_major_version }}.yml"
-  when: ansible_facts.os_family == 'RedHat'
-  tags:
-    - firewall
-    - always
-
-- name: Set variables for Debian
-  include_vars: "{{ ansible_facts.os_family }}.yml"
-  when: ansible_facts.os_family == 'Debian'
+- name: Include distribution specific variables
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_facts.distribution }}-{{ ansible_facts.distribution_version }}.yml"
+        - "{{ ansible_facts.os_family }}-{{ ansible_facts.distribution_major_version }}.yml"
+        - "{{ ansible_facts.distribution }}.yml"
+        - "{{ ansible_facts.os_family }}.yml"
+        - default.yml
+      paths:
+        - vars
   tags:
     - firewall
     - always
