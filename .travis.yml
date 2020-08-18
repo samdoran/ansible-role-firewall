@@ -7,19 +7,31 @@ env:
   matrix:
     - MOLECULE_DISTRIBUTION: centos6
     - MOLECULE_DISTRIBUTION: centos7
-    # - MOLECULE_DISTRIBUTION: rhel6
-    # - MOLECULE_DISTRIBUTION: rhel7
-    # - MOLECULE_DISTRIBUTION: ubuntu14
-    # - MOLECULE_DISTRIBUTION: ubuntu16
-    # - MOLECULE_DISTRIBUTION: ubuntu18
-    # - MOLECULE_DISTRIBUTION: debian8
-    # - MOLECULE_DISTRIBUTION: debian9
-    # - MOLECULE_DISTRIBUTION: fedora27
-    # - MOLECULE_DISTRIBUTION: fedora28
-    # - MOLECULE_DISTRIBUTION: fedora29
+    - MOLECULE_DISTRIBUTION: centos8
 
 install:
-  - pip install molecule docker
+  - pip install --no-deps molecule==3.0.6 ansible-lint
+  - pip install
+        Jinja2 \
+        PyYAML \
+        ansible-base \
+        cerberus \
+        click \
+        click-completion \
+        click-help-colors \
+        colorama \
+        cookiecutter \
+        docker==4.2.2 \
+        flake8 \
+        paramiko \
+        pexpect
+        pluggy \
+        pre-commit \
+        python-gilt \
+        sh \
+        tabulate \
+        tree-format \
+        yamllint \
 
 before_script:
   # Remove "ansible-role-" prefix from role name
