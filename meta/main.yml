@@ -1,7 +1,7 @@
 galaxy_info:
   role_name: firewall
   author: Sam Doran
-  description: Install and configure the firewall on Ubuntu, CentOS, or XenServer
+  description: Install and configure the firewall on Linux and macOS
   company: Ansible by Red Hat
   license: Apache 2.0
   min_ansible_version: 2.9
