@@ -18,15 +18,15 @@ firewall_rich_rules: []
   #   dest_port:
   #   new: yes
 
-firewall_custom_iptables_rules: []
-
 firewall_nat_rules: []
   # - family: ipv4
   #   original_port: 514
   #   protocol: udp
   #   translated_port: 5140
 
-## For firewalld only
+firewall_custom_iptables_rules: []
+firewall_custom_pf_rules: []
+
 firewall_firewalld_rules: []
   # - immediate:
   #   interface:

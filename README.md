@@ -3,7 +3,9 @@ Firewall
 [![Galaxy](https://img.shields.io/badge/galaxy-samdoran.firewall-blue.svg?style=flat)](https://galaxy.ansible.com/samdoran/firewall)
 [![Build Status](https://travis-ci.org/samdoran/ansible-role-firewall.svg?branch=master)](https://travis-ci.org/samdoran/ansible-role-firewall)
 
-Install and configure the firewall. For Ubuntu and RHEL/CentOS 6, an `iptables` template is copied and the iptables service is invoked. For RHEL/CentOS 7, the `firewalld` module is used to configure the firewall.
+This role will install and configure the firewall. It supports `iptables`, `firewalld`, and `pf`.
+
+For Ubuntu and RHEL/CentOS 6, an `iptables` template is copied and the iptables service is invoked. For RHEL/CentOS 7 or later, the `firewalld` module is used to configure the firewall. For macOS, a `pf.conf` template is used.
 
 FirewallD rules are currently _additive_ and will not "clean up" the firewall on a running system.
 
@@ -18,8 +20,9 @@ Role Variables
 | `firewall_allowed_tcp_ports` | `['22']` | List of allowed TCP ports |
 | `firewall_allowed_udp_ports` | `['161'] `| List of allowed UDP ports |
 | `firewall_rich_rules` | `[]` | Specify a source IP and destination port instead of opening the port globally. Optionally allow it only if it is new. With `iptables`, this adds rules to the `iptables` config file. With `firewalld`, this creates rich rules to the specified zone. |
-| `firewall_custom_iptables_rules` | `[]` | Rules inserted verbatim. Make sure the syntax is correct. |
-| `firewall_nat_rules` | `undefined` | List of ports and their protocols to NAT. With `iptables`, add prerouting rules to the `NAT` table. With `firewalld`, adds rich rules to the specified zone. |
+| `firewall_custom_iptables_rules` | `[]` | Rules inserted verbatim for `iptables`. Make sure the syntax is correct. |
+| `firewall_custom_pf_rules` | `[]` | Rules insterted verbatim for `pf` at the end of all other filter rules. Make sure the syntax is correct. |
+| `firewall_nat_rules` | `[]` | List of ports and their protocols to NAT. With `iptables`, add prerouting rules to the `NAT` table. With `firewalld`, adds rich rules to the specified zone. |
 | `firewall_firewalld_rules` | `[]` | List of rules to pass to the `firewalld` module. Each module argument is optional. |
 
 
@@ -51,23 +54,27 @@ Examples:
       - service: ceph
         timeout: 99
 
+    firewall_custom_pf_rules:
+      -
+
 Example Playbooks
 ----------------
 
-Parameterized role that restricts ICMP traffic, sets the default policy to `DROP`, passes in TCP and UDP ports to open:
+Restricts ICMP traffic, sets the default policy to `DROP`, passes in TCP and UDP ports to open:
 
 ```yaml
 - hosts: all
   roles:
     - role: sdoran.firewall
-      firewall_strict: true
-      firewall_allowed_tcp_ports:
-        - 22
-        - 80
-        - 443
-     firewall_allowed_udp_ports:
-       - 123
-       - 67
+      vars:
+        firewall_strict: true
+        firewall_allowed_tcp_ports:
+          - 22
+          - 80
+          - 443
+        firewall_allowed_udp_ports:
+          - 123
+          - 67
 ```
 
 Use advanced rules to restrict access to services based on IP on subnet:
@@ -99,7 +106,19 @@ NAT port to a service not running as root on a port <1024:
         translated_port: 5599
 ```
 
+Use a custom port for SSH and block the default port.
+
+```yaml
+- hosts: all
+  vars:
+    firewall_allowed_tcp_ports: []
+    firewall_nat_rules:
+      - protocol: tcp
+        original_part: 2022
+        translated_port: 22
+```
+
 License
 -------
 
-MIT
+Apache 2.0

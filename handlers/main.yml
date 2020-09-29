@@ -7,3 +7,8 @@
   service:
     name: "{{ _firewall_name }}"
     state: restarted
+
+- name: reload pf
+  command: /sbin/pfctl -E -f {{ _firewall_config_dir }}/{{ _firewall_config_file }}
+  async: 10
+  poll: 0

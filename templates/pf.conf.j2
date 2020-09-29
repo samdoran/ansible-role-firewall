@@ -1,0 +1,49 @@
+# Macros
+
+# Tables
+
+# Options
+set block-policy {{ 'drop' if firewall_strict else 'return' }}
+set fingerprints "/etc/pf.os"
+set ruleset-optimization basic
+set skip on lo0
+
+# Normalization
+scrub in all no-df
+
+# Queuing
+
+# Translation
+{% for rule in firewall_nat_rules %}
+rdr pass {{ 'inet6' if rule.protocol == 'ipv6' else 'inet' }} proto {{ rule.protocol }} from any to any port {{ rule.original_port }} -> 127.0.0.1 port {{ rule.translated_port }}
+{% endfor %}
+
+# Filtering
+block in log
+pass out
+
+{% if firewall_strict %}
+{# Only allow certain ICMP echo requests and drop ICMP timestamp requests #}
+pass out inet proto icmp all icmp-type echoreq
+block out inet proto icmp all icmp-type 13 code 0
+block out inet proto icmp all icmp-type 14 code 0
+{% elif firewall_allow_icmp %}
+{# Allow all ICMP traffic #}
+pass in proto icmp all
+pass out proto icmp all
+{% endif %}
+
+{% for port in firewall_allowed_tcp_ports %}
+pass in quick proto tcp from any to any port {{ port }}
+{% endfor %}
+{% for port in firewall_allowed_udp_ports %}
+pass in quick proto udp from any to any port {{ port }}
+{% endfor %}
+{%- for rule in firewall_custom_pf_rules %}
+{{ rule }}
+{% endfor -%}
+
+{%- for item in firewall_rich_rules %}
+pass in proto {{ item.protocol }} from {{ item.source }} to any port {{ item.dest_port }}
+{% endfor -%}
+

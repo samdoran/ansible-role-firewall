@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>{{ _firewall_job_name }}</string>
+    <key>Program</key>
+    <string>/sbin/pfctl</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>pfctl</string>
+        <string>-E</string>
+        <string>-f</string>
+        <string>{{ _firewall_config_dir }}/{{ _firewall_config_file }}</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>ServiceDescription</key>
+    <string>FreeBSD Packet Filter</string>
+    <key>StandardOutPath</key>
+    <string>/var/log/pf.log</string>
+    <key>StandardErrorPath</key>
+    <string>/var/log/pf.log</string>
+</dict>
+</plist>
