@@ -1,22 +1,33 @@
-pool:
-  vmImage: ubuntu-20.04
+jobs:
+  - job: Test Role on Linux
+    pool:
+      vmImage: ubuntu-20.04
+    strategy:
+      matrix:
+        centos6:
+          MOLECULE_DISTRIBUTION: centos6
+        centos7:
+          MOLECULE_DISTRIBUTION: centos7
+        centos8:
+          MOLECULE_DISTRIBUTION: centos8
+        debian8:
+          MOLECULE_DISTRIBUTION: debian8
+        debian9:
+          MOLECULE_DISTRIBUTION: debian9
+        debian10:
+          MOLECULE_DISTRIBUTION: debian10
 
-strategy:
-  matrix:
-    centos6:
-      MOLECULE_DISTRIBUTION: centos6
-    centos7:
-      MOLECULE_DISTRIBUTION: centos7
-    centos8:
-      MOLECULE_DISTRIBUTION: centos8
-    debian8:
-      MOLECULE_DISTRIBUTION: debian8
-    debian9:
-      MOLECULE_DISTRIBUTION: debian9
-    debian10:
-      MOLECULE_DISTRIBUTION: debian10
+    steps:
+      - script: |
+          pip3 install molecule[lint]==3.0.6 docker
+          echo $PATH
+          molecule test
+        displayName: Molecule
 
-steps:
-  - script: |
-      pip3 install molecule[lint]==3.0.6 docker
-      molecule test
+  - job: Test Role on macOS
+    pool:
+      vmImage: macOS-10.14
+    steps:
+      - script: |
+          pip3 install ansible-base
+          ansible --version
