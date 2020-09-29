@@ -1,9 +1,9 @@
 - name: reload firewall
   service:
-    name: "{{ firewall_name }}"
+    name: "{{ _firewall_name }}"
     state: reloaded
 
 - name: restart firewall
   service:
-    name: "{{ firewall_name }}"
+    name: "{{ _firewall_name }}"
     state: restarted

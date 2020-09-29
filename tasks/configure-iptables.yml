@@ -1,7 +1,7 @@
 - name: IPTABLES | Copy iptables template
   template:
-    src: "{{ firewall_template }}.j2"
-    dest: "{{ firewall_config_dir }}/{{ firewall_config_file }}"
+    src: "{{ _firewall_template }}.j2"
+    dest: "{{ _firewall_config_dir }}/{{ _firewall_config_file }}"
     backup: yes
     owner: root
     group: root

@@ -1,11 +1,11 @@
-- name: RHEL | Install {{ firewall_name }}
+- name: RHEL | Install {{ _firewall_name }}
   yum:
-    name: "{{ firewall_name }}"
+    name: "{{ _firewall_name }}"
     state: latest
 
 - name: RHEL | Set firewall template name (XenServer)
   set_fact:
-    firewall_template: "iptables-{{ ansible_facts.distribution }}"
+    _firewall_template: "iptables-{{ ansible_facts.distribution }}"
   when: ansible_facts.distribution == 'XenServer'
   tags:
     - firewall

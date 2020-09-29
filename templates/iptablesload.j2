@@ -1,3 +1,3 @@
 #!/bin/sh
-/sbin/iptables-restore < {{ firewall_config_dir }}/{{ firewall_config_file }}
+/sbin/iptables-restore < {{ _firewall_config_dir }}/{{ _firewall_config_file }}
 exit 0

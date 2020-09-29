@@ -1,6 +1,6 @@
 - name: FIREWALLD | Start and enable firewalld
   service:
-    name: "{{ firewall_name }}"
+    name: "{{ _firewall_name }}"
     enabled: yes
     state: started
   tags:
