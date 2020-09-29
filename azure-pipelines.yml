@@ -1,5 +1,6 @@
 jobs:
-  - job: Test Role on Linux
+  - job: Linux
+    displayName: Test Role on Linux
     pool:
       vmImage: ubuntu-20.04
     strategy:
@@ -24,7 +25,8 @@ jobs:
           molecule test
         displayName: Molecule
 
-  - job: Test Role on macOS
+  - job: macOS
+    displayName: Test Role on macOS
     pool:
       vmImage: macOS-10.14
     steps:
