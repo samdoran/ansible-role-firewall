@@ -22,7 +22,9 @@ strategy:
 steps:
   - script: |
       pip3 install molecule[lint]==3.0.6 docker
-      cd ../
-      mv ansible-role-$ROLE_NAME $ROLE_NAME
-      cd $ROLE_NAME
-      molecule test
+      pwd
+      ls
+      ls ../
+      # mv ansible-role-$ROLE_NAME $ROLE_NAME
+      # cd $ROLE_NAME
+      # molecule test
