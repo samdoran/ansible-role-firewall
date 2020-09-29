@@ -1,9 +1,6 @@
 pool:
   vmImage: ubuntu-20.04
 
-variables:
-  ROLE_NAME: firewall
-
 strategy:
   matrix:
     centos6:
@@ -22,9 +19,4 @@ strategy:
 steps:
   - script: |
       pip3 install molecule[lint]==3.0.6 docker
-      pwd
-      ls
-      ls ../
-      # mv ansible-role-$ROLE_NAME $ROLE_NAME
-      # cd $ROLE_NAME
-      # molecule test
+      molecule test
