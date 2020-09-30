@@ -1,3 +1,9 @@
+triggers:
+  branches:
+    - master
+    - main
+
+
 jobs:
   - job: Linux
     displayName: Test
@@ -20,6 +26,9 @@ jobs:
           MOLECULE_DISTRIBUTION: debian10
 
     steps:
+      - checkout:
+        path: firewall
+
       - script: |
           export PATH=/home/vsts/.local/bin:$PATH
           pip3 install molecule[lint]==3.0.6 docker
@@ -31,6 +40,9 @@ jobs:
     pool:
       vmImage: macOS-10.14
     steps:
+      - checkout:
+        path: firewall
+
       - script: |
           pip3 install ansible-base
           python3 -V
