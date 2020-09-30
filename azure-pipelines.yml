@@ -1,28 +1,49 @@
-pool:
-  vmImage: ubuntu-20.04
+trigger:
+  - master
+  - main
 
-variables:
-  ROLE_NAME: firewall
 
-strategy:
-  matrix:
-    centos6:
-      MOLECULE_DISTRIBUTION: centos6
-    centos7:
-      MOLECULE_DISTRIBUTION: centos7
-    centos8:
-      MOLECULE_DISTRIBUTION: centos8
-    debian8:
-      MOLECULE_DISTRIBUTION: debian8
-    debian9:
-      MOLECULE_DISTRIBUTION: debian9
-    debian10:
-      MOLECULE_DISTRIBUTION: debian10
+jobs:
+  - job: Linux
+    displayName: Test
+    pool:
+      vmImage: ubuntu-20.04
+    strategy:
+      matrix:
+        CentOS 6:
+          vmImage: ubuntu-20.04
+          MOLECULE_DISTRIBUTION: centos6
+        CentOS 7:
+          MOLECULE_DISTRIBUTION: centos7
+        CentOS 8:
+          MOLECULE_DISTRIBUTION: centos8
+        # Debian 8:
+        #   MOLECULE_DISTRIBUTION: debian8
+        # Debian 9:
+        #   MOLECULE_DISTRIBUTION: debian9
+        # Debian 10:
+        #   MOLECULE_DISTRIBUTION: debian10
 
-steps:
-  - script: |
-      pip3 install molecule[lint]==3.0.6 docker
-      cd ../
-      mv ansible-role-$ROLE_NAME $ROLE_NAME
-      cd $ROLE_NAME
-      molecule test
+    steps:
+      - checkout: self
+        path: firewall
+
+      - script: |
+          export PATH=/home/vsts/.local/bin:$PATH
+          pip3 install molecule[lint]==3.0.6 docker
+          molecule test
+        displayName: Molecule
+
+  - job: macOS
+    displayName: Test macOS
+    pool:
+      vmImage: macOS-10.14
+    steps:
+      - checkout: self
+        path: firewall
+
+      - script: |
+          pip3 install ansible-base
+          ansible --version
+          cd ../
+          ansible-playbook -i localhost, -c local firewall/molecule/default/converge.yml
