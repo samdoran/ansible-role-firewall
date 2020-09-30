@@ -17,12 +17,12 @@ jobs:
           MOLECULE_DISTRIBUTION: centos7
         CentOS 8:
           MOLECULE_DISTRIBUTION: centos8
-        Debian 8:
-          MOLECULE_DISTRIBUTION: debian8
-        Debian 9:
-          MOLECULE_DISTRIBUTION: debian9
-        Debian 10:
-          MOLECULE_DISTRIBUTION: debian10
+        # Debian 8:
+        #   MOLECULE_DISTRIBUTION: debian8
+        # Debian 9:
+        #   MOLECULE_DISTRIBUTION: debian9
+        # Debian 10:
+        #   MOLECULE_DISTRIBUTION: debian10
 
     steps:
       - checkout: self
@@ -44,7 +44,6 @@ jobs:
 
       - script: |
           pip3 install ansible-base
-          python3 -V
           ansible --version
           cd ../
-          ls -l
+          ansible localhost -m import_role -a 'name=firewall'
