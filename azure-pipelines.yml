@@ -46,4 +46,4 @@ jobs:
           pip3 install ansible-base
           ansible --version
           cd ../
-          ansible localhost -m import_role -a 'name=firewall'
+          ansible-playbook -i localhost, -c local firewall/molecule/default/converge.yml
