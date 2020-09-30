@@ -1,7 +1,6 @@
 trigger:
-  branches:
-    - master
-    - main
+  - master
+  - main
 
 
 jobs:
