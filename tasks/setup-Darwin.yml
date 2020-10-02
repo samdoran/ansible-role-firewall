@@ -6,7 +6,7 @@
     - firewall
 
 - name: Enable Application Firewall
-  command: /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+  command: /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on --setstealthmode off
   register: alf_set_state
   changed_when: "'already enabled' not in alf_set_state.stdout"
   notify: reload pf
