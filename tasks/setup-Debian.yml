@@ -2,6 +2,8 @@
   apt:
     name: iptables
     state: latest
+  tags:
+    - firewall
 
 - name: DEBIAN | Copy iptables load script
   template:
@@ -12,4 +14,4 @@
     mode: '0700'
   tags:
     - firewall
-    - fwconfig
+    - firewall_config

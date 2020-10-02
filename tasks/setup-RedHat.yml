@@ -9,4 +9,4 @@
   when: ansible_facts.distribution == 'XenServer'
   tags:
     - firewall
-    - fwconfig
+    - firewall_config

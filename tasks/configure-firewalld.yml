@@ -4,8 +4,8 @@
     enabled: yes
     state: started
   tags:
+    - firewall
     - firewall_config
-    - fwconfig
 
 - name: FIREWALLD | Open TCP ports in firewalld
   firewalld:
@@ -16,8 +16,8 @@
   with_items: "{{ firewall_allowed_tcp_ports }}"
   notify: restart firewall
   tags:
+    - firewall
     - firewall_config
-    - fwconfig
 
 - name: FIREWALLD | Open UDP ports in firewalld
   firewalld:
@@ -28,8 +28,8 @@
   with_items: "{{ firewall_allowed_udp_ports }}"
   notify: restart firewall
   tags:
+    - firewall
     - firewall_config
-    - fwconfig
 
 - name: FIREWALLD | Configure NAT rules
   firewalld:
@@ -40,8 +40,8 @@
   with_items: "{{ firewall_nat_rules }}"
   notify: restart firewall
   tags:
+    - firewall
     - firewall_config
-    - fwconfig
 
 - name: FIREWALLD | Configure rich rules
   firewalld:
@@ -51,8 +51,8 @@
     rich_rule: rule family={{ item.family | default('ipv4') }} port port={{ item.dest_port }} protocol={{ item.protocol }} source address={{ item.source }} accept
   with_items: "{{ firewall_rich_rules }}"
   tags:
+    - firewall
     - firewall_config
-    - fwconfig
 
 - name: FIREWALLD | Configure additional firewalld rules
   firewalld:
@@ -70,5 +70,5 @@
   with_items: "{{ firewall_firewalld_rules }}"
   notify: restart firewall
   tags:
+    - firewall
     - firewall_config
-    - fwconfig
