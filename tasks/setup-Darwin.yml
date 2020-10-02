@@ -1,0 +1,15 @@
+- name: Get Application Firewall state
+  command: /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate
+  changed_when: no
+  register: alf_state
+  tags:
+    - firewall
+
+- name: Enable Application Firewall
+  command: /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+  register: alf_set_state
+  changed_when: "'already enabled' not in alf_set_state.stdout"
+  notify: reload pf
+  when: "'is disabled' in alf_state.stdout"
+  tags:
+    - firewall

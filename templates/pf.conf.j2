@@ -1,3 +1,9 @@
+# Ansible managed. Local changes will be overwritten.
+
+#
+# See pf.conf(5) for syntax.
+#
+
 # Macros
 
 # Tables
@@ -10,10 +16,14 @@ set skip on lo0
 
 # Normalization
 scrub in all no-df
+scrub-anchor "com.apple/*"
 
 # Queuing
 
 # Translation
+nat-anchor "com.apple/*"
+rdr-anchor "com.apple/*"
+dummynet-anchor "com.apple/*"
 {% for rule in firewall_nat_rules %}
 rdr pass {{ 'inet6' if rule.protocol == 'ipv6' else 'inet' }} proto {{ rule.protocol }} from any to any port {{ rule.original_port }} -> 127.0.0.1 port {{ rule.translated_port }}
 {% endfor %}
@@ -25,8 +35,9 @@ pass out
 {% if firewall_strict %}
 {# Only allow certain ICMP echo requests and drop ICMP timestamp requests #}
 pass out inet proto icmp all icmp-type echoreq
-block out inet proto icmp all icmp-type 13 code 0
-block out inet proto icmp all icmp-type 14 code 0
+block drop in inet proto icmp all icmp-type 13 code 0
+block drop in inet proto icmp all icmp-type 14 code 0
+block drop in inet6 proto ipv6-icmp all icmp6-type echoreq
 {% elif firewall_allow_icmp %}
 {# Allow all ICMP traffic #}
 pass in proto icmp all
@@ -47,3 +58,5 @@ pass in quick proto udp from any to any port {{ port }}
 pass in proto {{ item.protocol }} from {{ item.source }} to any port {{ item.dest_port }}
 {% endfor -%}
 
+anchor "com.apple/*"
+load anchor "com.apple" from "/etc/pf.anchors/com.apple"
