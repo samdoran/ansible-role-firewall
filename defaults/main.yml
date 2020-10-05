@@ -38,5 +38,13 @@ firewall_firewalld_rules: []
   #   state: enabled
   #   timeout:
   #   zone:
+
 # macOS
+firewall_custom_pf_macros: []
+firewall_custom_pf_table_rules: []
+firewall_custom_pf_options: []
+firewall_custom_pf_normalization_rules: []
+firewall_custom_pf_queuing_rules: []
 firewall_custom_pf_filter_rules: []
+
+firewall_alf_global_state: on
