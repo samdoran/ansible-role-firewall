@@ -10,12 +10,12 @@
   notify: restart firewall
   tags:
     - firewall
-    - fwconfig
-    - fwrules
+    - firewall_config
 
 - name: IPTABLES | Ensure iptables is enabled and started
   service:
     name: iptables
     enabled: yes
     state: started
-  tags: firewall
+  tags:
+    - firewall

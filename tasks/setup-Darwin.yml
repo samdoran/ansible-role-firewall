@@ -1,0 +1,21 @@
+- name: Get Application Firewall state
+  command: /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate
+  changed_when: no
+  register: alf_state
+  tags:
+    - firewall
+
+# /etc/pf.conf is loaded by the Application Firewall only if stealthmode is on.
+# Since the same rules created by stealth mode are also added by this role,
+# make sure stealth mode is disabled. This is why the role also uses its own
+# launchctl job to enable the firewall on boot.
+- name: Configure Application Firewall
+  command: >-
+    /usr/libexec/ApplicationFirewall/socketfilterfw
+      --setglobalstate {{ _firewall_alf_state[firewall_alf_global_state] }}
+      --setstealthmode off
+  register: alf_set_state
+  changed_when: "'already ' ~ _firewall_alf_status_string[firewall_alf_global_state] not in alf_set_state.stdout"
+  when: "'Firewall is ' ~ _firewall_alf_status_string[firewall_alf_global_state] not in alf_state.stdout"
+  tags:
+    - firewall

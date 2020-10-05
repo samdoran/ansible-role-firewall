@@ -1,10 +1,10 @@
-- name: PF | Create {{ _firewall_config_dir }} directory
-  file:
-    path: "{{ _firewall_config_dir }}"
-    owner: root
-    group: wheel
-    mode: '0755'
-    state: directory
+- name: PF | Copy launchtl job file
+  template:
+    src: pfctl.plist.j2
+    dest: /Library/LaunchDaemons/{{ _firewall_job_name }}.plist
+    mode: '0644'
+  register: launchtl_job_file
+  notify: reload pf
   tags:
     - firewall
 
@@ -19,43 +19,4 @@
   notify: reload pf
   tags:
     - firewall
-
-- name: PF | Check if launchtl job file requires changes
-  template:
-    src: pfctl.plist.j2
-    dest: /Library/LaunchDaemons/{{ _firewall_job_name }}.plist
-    owner: root
-    group: wheel
-    mode: '0644'
-  check_mode: yes
-  register: launchtl_job_file
-  tags:
-    - firewall
-
-- name: PF | Modify file
-  when: launchtl_job_file is changed
-  block:
-    - name: PF | Bootout service
-      command: launchctl bootout system/{{ _firewall_job_name }}
-      register: bootout
-      failed_when:
-        - bootout.rc != 0
-        - "'Operation now in progress' not in bootout.stderr"
-        - "'No such process' not in bootout.stderr"
-      tags:
-        - firewall
-
-    - name: PF | Copy launchtl job file
-      template:
-        src: pfctl.plist.j2
-        dest: /Library/LaunchDaemons/{{ _firewall_job_name }}.plist
-        mode: '0644'
-      tags:
-        - firewall
-
-    - name: PF | Bootstrap pf
-      command: launchctl bootstrap system /Library/LaunchDaemons/{{ _firewall_job_name }}.plist
-      register: pf_start
-      until: pf_start is success
-      tags:
-        - firewall
+    - firewall_config

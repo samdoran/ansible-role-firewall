@@ -1,5 +1,17 @@
 _firewall_name: pf
-_firewall_config_dir: /etc/pf
-_firewall_config_file: rules.conf
+_firewall_config_dir: /etc
+_firewall_config_file: pf.conf
 _firewall_template: pf.conf.j2
 _firewall_job_name: com.ansible.pfctl
+
+_firewall_alf_state:
+  True: 'on'
+  'on': 'on'
+  False: 'off'
+  'off': 'off'
+
+_firewall_alf_status_string:
+  True: 'enabled'
+  'on': 'enabled'
+  False: 'disabled'
+  'off': 'disabled'

@@ -1,49 +1,73 @@
+# Ansible managed. Local changes will be overwritten.
+
+#
+# See pf.conf(5) for syntax.
+#
+
 # Macros
+{% for rule in firewall_custom_pf_macros %}
+{{ rule }}
+{% endfor %}
 
 # Tables
+{% for rule in firewall_custom_pf_table_rules %}
+{{ rule }}
+{% endfor %}
 
 # Options
 set block-policy {{ 'drop' if firewall_strict else 'return' }}
-set fingerprints "/etc/pf.os"
 set ruleset-optimization basic
 set skip on lo0
+{% for rule in firewall_custom_pf_options %}
+{{ rule }}
+{% endfor %}
 
 # Normalization
 scrub in all no-df
+scrub-anchor "com.apple/*"
+{% for rule in firewall_custom_pf_normalization_rules %}
+{{ rule }}
+{% endfor %}
 
 # Queuing
+dummynet-anchor "com.apple/*"
+{% for rule in firewall_custom_pf_queuing_rules %}
+{{ rule }}
+{% endfor %}
 
 # Translation
+nat-anchor "com.apple/*"
+rdr-anchor "com.apple/*"
 {% for rule in firewall_nat_rules %}
 rdr pass {{ 'inet6' if rule.protocol == 'ipv6' else 'inet' }} proto {{ rule.protocol }} from any to any port {{ rule.original_port }} -> 127.0.0.1 port {{ rule.translated_port }}
 {% endfor %}
 
 # Filtering
 block in log
-pass out
-
+pass out all
+pass quick proto { tcp udp } from any port 67:68 to any port 67:68 keep state
 {% if firewall_strict %}
 {# Only allow certain ICMP echo requests and drop ICMP timestamp requests #}
-pass out inet proto icmp all icmp-type echoreq
-block out inet proto icmp all icmp-type 13 code 0
-block out inet proto icmp all icmp-type 14 code 0
+pass inet proto icmp all icmp-type echoreq
+block drop in inet proto icmp all icmp-type 13 code 0
+block drop in inet proto icmp all icmp-type 14 code 0
+block drop in inet6 proto ipv6-icmp all icmp6-type echoreq
 {% elif firewall_allow_icmp %}
 {# Allow all ICMP traffic #}
 pass in proto icmp all
 pass out proto icmp all
 {% endif %}
-
 {% for port in firewall_allowed_tcp_ports %}
 pass in quick proto tcp from any to any port {{ port }}
 {% endfor %}
 {% for port in firewall_allowed_udp_ports %}
 pass in quick proto udp from any to any port {{ port }}
 {% endfor %}
-{%- for rule in firewall_custom_pf_rules %}
+{% for rule in firewall_custom_pf_filter_rules %}
 {{ rule }}
-{% endfor -%}
-
-{%- for item in firewall_rich_rules %}
+{% endfor %}
+{% for item in firewall_rich_rules %}
 pass in proto {{ item.protocol }} from {{ item.source }} to any port {{ item.dest_port }}
-{% endfor -%}
-
+{% endfor %}
+anchor "com.apple/*"
+load anchor "com.apple" from "/etc/pf.anchors/com.apple"
