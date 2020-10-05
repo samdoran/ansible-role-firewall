@@ -4,7 +4,7 @@
     dest: /Library/LaunchDaemons/{{ _firewall_job_name }}.plist
     mode: '0644'
   register: launchtl_job_file
-  notify: reload pf service
+  notify: reload pf
   tags:
     - firewall
 

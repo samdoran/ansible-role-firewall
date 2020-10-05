@@ -8,7 +8,20 @@
     name: "{{ _firewall_name }}"
     state: restarted
 
-- name: reload pf
-  command: /sbin/pfctl -E -f {{ _firewall_config_dir }}/{{ _firewall_config_file }}
+- name: bootout pf service
+  command: launchctl bootout system/{{ _firewall_job_name }}
+  register: bootout
+  failed_when:
+    - bootout.rc != 0
+    - "'Operation now in progress' not in bootout.stderr"
+    - "'No such process' not in bootout.stderr"
+  listen: reload pf
+
+- name: bootstrap pf service
+  command: launchctl bootstrap system /Library/LaunchDaemons/{{ _firewall_job_name }}.plist
+  register: pf_start
+  until: pf_start is success
+  listen: reload pf
+  # Fire and forget in cases where the ssh connection may be interrupted
   async: 10
   poll: 0
