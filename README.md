@@ -6,12 +6,16 @@ Firewall
 
 This role will install and configure the firewall. It supports `iptables`, `firewalld`, and `pf`.
 
-For Ubuntu and RHEL/CentOS 6, an `iptables` template is copied and the iptables service is invoked. For RHEL/CentOS 7 or later, the `firewalld` module is used to configure the firewall. For macOS, a `pf.conf` template is used.
+For Ubuntu and RHEL/CentOS 6, an `iptables` template is copied and the iptables service is invoked. For RHEL/CentOS 7 or later, the `firewalld` module is used to configure the firewall.
 
-FirewallD rules are currently _additive_ and will not "clean up" the firewall on a running system.
+For macOS, a `pf.conf` template is used. The [application firewall][_alf] can be disabled or enabled. If enabled, stealth mode will be disabled since the `pf.conf` template manages the same rules set my stealth mode.
+
+`firewalld` rules are currently _additive_ and will not "clean up" the firewall on a running system.
 
 Role Variables
 --------------
+
+These variables apply to all firewall types:
 
 |   Name               | Default Value | Description                                                      |
 |----------------------|---------------|------------------------------------------------------------------|
@@ -21,11 +25,33 @@ Role Variables
 | `firewall_allowed_tcp_ports` | `['22']` | List of allowed TCP ports |
 | `firewall_allowed_udp_ports` | `['161'] `| List of allowed UDP ports |
 | `firewall_rich_rules` | `[]` | Specify a source IP and destination port instead of opening the port globally. Optionally allow it only if it is new. With `iptables`, this adds rules to the `iptables` config file. With `firewalld`, this creates rich rules to the specified zone. |
-| `firewall_custom_iptables_rules` | `[]` | Rules inserted verbatim for `iptables`. Make sure the syntax is correct. |
 | `firewall_custom_pf_rules` | `[]` | Rules insterted verbatim for `pf` at the end of all other filter rules. Make sure the syntax is correct. |
 | `firewall_nat_rules` | `[]` | List of ports and their protocols to NAT. With `iptables`, add prerouting rules to the `NAT` table. With `firewalld`, adds rich rules to the specified zone. |
+
+
+`firewalld` specific variables:
+
+|   Name               | Default Value | Description                                                      |
+|----------------------|---------------|------------------------------------------------------------------|
 | `firewall_firewalld_rules` | `[]` | List of rules to pass to the `firewalld` module. Each module argument is optional. |
 
+`iptables` specific variables:
+
+|   Name               | Default Value | Description                                                      |
+|----------------------|---------------|------------------------------------------------------------------|
+| `firewall_custom_iptables_rules` | `[]` | Rules inserted verbatim for `iptables`. Make sure the syntax is correct. |
+
+macOS (`pf`) and [application firewall][_alf] specific variables. The custom rules are inserted in the appropciate section in the `pf.conf` template. The syntax must be correct or valiadtion will fail. See the man page of [`pf.conf`](https://man.openbsd.org/pf.conf.5) for details.:
+
+|   Name               | Default Value | Description                                                      |
+|----------------------|---------------|------------------------------------------------------------------|
+| `firewall_alf_global_state` | `on` | State of the macOS [application firewall][_alf]. |
+| `firewall_custom_pf_macros` | `[]` | Custom `pf` macros. |
+| `firewall_custom_pf_table_rules` | `[]` | Custom `pf` table rules. |
+| `firewall_custom_pf_options` | `[]` | Custom `pf` options. |
+| `firewall_custom_pf_normalization_rules` | `[]` | Custom `pf` normalation rules. |
+| `firewall_custom_pf_queuing_rules` | `[]` | Custom `pf` queuing rules. |
+| `firewall_custom_pf_filter_rules` | `[]` | Custom `pf` filter rules. |
 
 Examples:
 
@@ -123,3 +149,6 @@ License
 -------
 
 Apache 2.0
+
+
+[_alf]: https://support.apple.com/en-us/HT201642
