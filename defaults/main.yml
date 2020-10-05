@@ -25,7 +25,6 @@ firewall_nat_rules: []
   #   translated_port: 5140
 
 firewall_custom_iptables_rules: []
-firewall_custom_pf_rules: []
 
 firewall_firewalld_rules: []
   # - immediate:
@@ -39,3 +38,5 @@ firewall_firewalld_rules: []
   #   state: enabled
   #   timeout:
   #   zone:
+# macOS
+firewall_custom_pf_filter_rules: []

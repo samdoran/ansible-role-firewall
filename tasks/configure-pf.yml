@@ -1,3 +1,13 @@
+- name: PF | Copy launchtl job file
+  template:
+    src: pfctl.plist.j2
+    dest: /Library/LaunchDaemons/{{ _firewall_job_name }}.plist
+    mode: '0644'
+  register: launchtl_job_file
+  notify: reload pf service
+  tags:
+    - firewall
+
 - name: PF | Copy pf rules
   template:
     src: "{{ _firewall_template }}"

@@ -1,5 +1,5 @@
 _firewall_name: pf
-_firewall_config_dir: /etc/
+_firewall_config_dir: /etc
 _firewall_config_file: pf.conf
 _firewall_template: pf.conf.j2
 _firewall_job_name: com.ansible.pfctl
