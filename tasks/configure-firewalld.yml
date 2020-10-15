@@ -8,7 +8,7 @@
     - firewall_config
 
 - name: FIREWALLD | Open TCP ports in firewalld
-  firewalld:
+  ansible.posix.firewalld:
     permanent: "{{ item.permanent | default('yes') }}"
     state: enabled
     port: "{{ item.port | default(item) }}/tcp"
@@ -20,7 +20,7 @@
     - firewall_config
 
 - name: FIREWALLD | Open UDP ports in firewalld
-  firewalld:
+  ansible.posix.firewalld:
     permanent: "{{ item.permanent | default('yes') }}"
     state: enabled
     port: "{{ item.port | default(item) }}/udp"
@@ -32,7 +32,7 @@
     - firewall_config
 
 - name: FIREWALLD | Configure NAT rules
-  firewalld:
+  ansible.posix.firewalld:
     state: enabled
     permanent: yes
     zone: "{{ item.zone | default(omit) }}"
@@ -44,7 +44,7 @@
     - firewall_config
 
 - name: FIREWALLD | Configure rich rules
-  firewalld:
+  ansible.posix.firewalld:
     state: enabled
     permanent: yes
     zone: "{{ item.zone | default(omit) }}"
@@ -55,7 +55,7 @@
     - firewall_config
 
 - name: FIREWALLD | Configure additional firewalld rules
-  firewalld:
+  ansible.posix.firewalld:
     immediate: "{{ item.immediate | default(omit) }}"
     interface: "{{ item.interface | default(omit) }}"
     masquerade: "{{ item.masquerade | default(omit) }}"

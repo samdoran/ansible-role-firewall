@@ -12,6 +12,11 @@ For macOS, a `pf.conf` template is used. The [application firewall][_alf] can be
 
 `firewalld` rules are currently _additive_ and will not "clean up" the firewall on a running system.
 
+Dependencies
+------------
+
+- `ansible.posix` collection
+
 Role Variables
 --------------
 
@@ -83,6 +88,7 @@ Examples:
 
     firewall_custom_pf_rules:
       -
+
 
 Example Playbooks
 ----------------
