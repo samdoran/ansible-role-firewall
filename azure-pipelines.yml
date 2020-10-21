@@ -1,36 +1,35 @@
-trigger:
-  - master
-  - main
-
+schedules:
+  - cron: "0 2 * * Sun"
+    displayName: Weekly
+    branches:
+      include:
+        - master
+        - main
+    always: yes
 
 jobs:
-  - job: Linux
-    displayName: Test
+  - job: L
     pool:
       vmImage: ubuntu-20.04
     strategy:
       matrix:
         CentOS 6:
-          vmImage: ubuntu-20.04
           MOLECULE_DISTRIBUTION: centos6
         CentOS 7:
           MOLECULE_DISTRIBUTION: centos7
         CentOS 8:
           MOLECULE_DISTRIBUTION: centos8
-        # Debian 8:
-        #   MOLECULE_DISTRIBUTION: debian8
-        # Debian 9:
-        #   MOLECULE_DISTRIBUTION: debian9
-        # Debian 10:
-        #   MOLECULE_DISTRIBUTION: debian10
 
     steps:
       - checkout: self
         path: firewall
 
       - script: |
+          set -eux
           export PATH=/home/vsts/.local/bin:$PATH
-          pip3 install molecule[lint]==3.0.6 docker
+          sudo apt remove -y ansible
+          pip install molecule==3.0.8 docker yamllint ansible-lint ansible
+          ansible-galaxy install -n -r molecule/default/requirements.yml
           molecule test
         displayName: Molecule
 
@@ -43,7 +42,8 @@ jobs:
         path: firewall
 
       - script: |
-          pip3 install ansible-base
+          pip install ansible-base
+          ansible-galaxy install -n -r molecule/default/requirements.yml
           ansible --version
           cd ../
           ansible-playbook -i localhost, -c local firewall/molecule/default/converge.yml

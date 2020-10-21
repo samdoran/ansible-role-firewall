@@ -1,5 +1,6 @@
 dependency:
   name: galaxy
+  enabled: no
 driver:
   name: docker
 lint: |
