@@ -14,8 +14,8 @@
     - firewall
     - always
 
-- include_tasks: setup-{{ ansible_facts.os_family }}.yml
-  tags:
+    - include_tasks: setup-{{ ansible_facts.os_family }}-{{ _firewall_name }}.yml
+  tags
     - firewall
 
 - include_tasks: configure-{{ _firewall_name }}.yml
