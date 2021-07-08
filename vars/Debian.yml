@@ -1,4 +1,1 @@
-_firewall_name: iptables
-_firewall_config_dir: /etc/
-_firewall_config_file: iptables.rules
-_firewall_template: iptables
+_firewall_name: firewalld

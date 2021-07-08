@@ -1,0 +1,7 @@
+- name: DEBIAN | Install firewalld
+  apt:
+    name: firewalld
+    state: latest
+  tags:
+    - firewall
+
