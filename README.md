@@ -1,7 +1,7 @@
 Firewall
 =========
 [![Galaxy](https://img.shields.io/badge/galaxy-samdoran.firewall-blue.svg?style=flat)](https://galaxy.ansible.com/samdoran/firewall)
-[![Build Status](https://travis-ci.com/samdoran/ansible-role-firewall.svg?branch=master)](https://travis-ci.com/samdoran/ansible-role-firewall)
+[![Build Status](https://travis-ci.com/samdoran/ansible-role-firewall.svg?branch=main)](https://travis-ci.com/samdoran/ansible-role-firewall)
 [![Build Status](https://dev.azure.com/samdoran/ansible-role-firewall/_apis/build/status/samdoran.ansible-role-firewall?branchName=master)](https://dev.azure.com/samdoran/ansible-role-firewall/_build/latest?definitionId=1&branchName=master)
 
 This role will install and configure the firewall. It supports `iptables`, `firewalld`, and `pf`.
