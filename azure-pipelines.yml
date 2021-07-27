@@ -33,19 +33,19 @@ jobs:
           molecule test
         displayName: Molecule
 
-  - job: macOS
-    displayName: Test macOS
-    pool:
-      vmImage: macOS-10.14
-    steps:
-      - checkout: self
-        path: firewall
-
-      - script: |
-          set -eux
-          export PATH=/home/vsts/.local/bin:$PATH
-          pip install ansible-core
-          ansible-galaxy install -n -r molecule/default/requirements.yml
-          ansible --version
-          cd ../
-          ansible-playbook -i localhost, -c local firewall/molecule/default/converge.yml
+#   - job: macOS
+#     displayName: Test macOS
+#     pool:
+#       vmImage: macOS-10.14
+#     steps:
+#       - checkout: self
+#         path: firewall
+#
+#       - script: |
+#           set -eux
+#           export PATH=/home/vsts/.local/bin:$PATH
+#           pip install ansible-core
+#           ansible-galaxy install -n -r molecule/default/requirements.yml
+#           ansible --version
+#           cd ../
+#           ansible-playbook -i localhost, -c local firewall/molecule/default/converge.yml
