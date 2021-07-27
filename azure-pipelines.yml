@@ -42,7 +42,9 @@ jobs:
         path: firewall
 
       - script: |
-          pip install ansible-base
+          set -eux
+          export PATH=/home/vsts/.local/bin:$PATH
+          pip install ansible-core
           ansible-galaxy install -n -r molecule/default/requirements.yml
           ansible --version
           cd ../
